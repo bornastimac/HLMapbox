@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HL</string>
+    <string name="access_token">pk.eyJ1IjoiYnVyZWsxMjMiLCJhIjoiY2o0MDNieWZvMDlkZTJ6cnpvc3VpN3R2ZSJ9.8WhEtG7PD2-F7x9M0gg0GQ</string>
+
 </resources>

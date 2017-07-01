@@ -186,8 +186,5 @@ public class MainActivity extends Activity {
         mapView.onSaveInstanceState(outState);
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, RouteActivity.class);
-        startActivity(intent);
-    }
+
 }

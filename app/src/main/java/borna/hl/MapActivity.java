@@ -28,6 +28,9 @@ import com.mapbox.services.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.models.Position;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import retrofit2.Call;
@@ -79,6 +82,16 @@ public class MapActivity extends Activity {
                 }
             }
         });
+
+
+        //checking perserved data
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+        String gotBack = pref.getString("user", null);
+
+        //FILE TESTING AREA END
+
     }
 
     private void getRoute(Position origin, Position destination) throws ServicesException {
@@ -143,6 +156,16 @@ public class MapActivity extends Activity {
                 .color(Color.parseColor("#000000"))
                 .width(5));
 
+    }
+
+    public void logout(View view){
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

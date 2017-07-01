@@ -15,4 +15,11 @@
         app:mapbox_cameraZoom ="11"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:onClick="logout"
+        />
+
 </RelativeLayout>

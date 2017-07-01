@@ -1,7 +1,9 @@
 package borna.hl;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -10,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileOutputStream;
 
 public class LoginActivity extends Activity {
     Button b1,b2;
@@ -31,13 +35,31 @@ public class LoginActivity extends Activity {
         tx1 = (TextView)findViewById(R.id.textView3);
         tx1.setVisibility(View.GONE);
 
+        //been logged in recently?
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+        String gotBack = pref.getString("user", null);
+        if (gotBack != null)
+            if( gotBack.equals("admin"))
+            {
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        //been logged in recently? END
+
+
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(ed1.getText().toString().equals("admin") &&
                         ed2.getText().toString().equals("admin")) {
-                    Toast.makeText(getApplicationContext(),
-                            "Redirecting...",Toast.LENGTH_SHORT).show();
+                    // Perserving logged user
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("user", "admin");
+                    editor.commit();
+                    // Perserving logged user END
                     Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                     startActivity(intent);
                     finish();
@@ -62,5 +84,7 @@ public class LoginActivity extends Activity {
                 finish();
             }
         });
+
+
     }
 }

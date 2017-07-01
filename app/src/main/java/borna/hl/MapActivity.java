@@ -1,7 +1,9 @@
 package borna.hl;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,16 +35,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends Activity {
+public class MapActivity extends Activity {
     private MapView mapView;
     private DirectionsRoute currentRoute;
     private MapboxMap map;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MapActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this,getString(R.string.access_token));
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_map);
 
         // Alhambra landmark in Granada, Spain.
         final Position origin = Position.fromCoordinates(  -3.58809,37.17616);
@@ -76,7 +78,6 @@ public class MainActivity extends Activity {
                     servicesException.printStackTrace();
                 }
             }
-
         });
     }
 
@@ -106,7 +107,7 @@ public class MainActivity extends Activity {
                 currentRoute = response.body().getRoutes().get(0);
                 Log.d(TAG, "Distance: " + currentRoute.getDistance());
                 Toast.makeText(
-                        MainActivity.this,
+                        MapActivity.this,
                         "Route is " + currentRoute.getDistance() + " meters long.",
                         Toast.LENGTH_SHORT).show();
 
@@ -117,7 +118,7 @@ public class MainActivity extends Activity {
             @Override
             public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
                 Log.e(TAG, "Error: " + throwable.getMessage());
-                Toast.makeText(MainActivity.this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapActivity.this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

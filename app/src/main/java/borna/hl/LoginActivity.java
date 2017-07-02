@@ -42,7 +42,7 @@ public class LoginActivity extends Activity {
         if (gotBack != null)
             if( gotBack.equals("admin"))
             {
-                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -60,7 +60,7 @@ public class LoginActivity extends Activity {
                     editor.putString("user", "admin");
                     editor.commit();
                     // Perserving logged user END
-                    Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
                     startActivity(intent);
                     finish();
                 }else{
@@ -84,7 +84,6 @@ public class LoginActivity extends Activity {
                 finish();
             }
         });
-
 
     }
 }

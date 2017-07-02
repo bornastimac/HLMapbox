@@ -83,15 +83,6 @@ public class MapActivity extends Activity {
             }
         });
 
-
-        //checking perserved data
-
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-        String gotBack = pref.getString("user", null);
-
-        //FILE TESTING AREA END
-
     }
 
     private void getRoute(Position origin, Position destination) throws ServicesException {
@@ -155,7 +146,6 @@ public class MapActivity extends Activity {
                 .add(points)
                 .color(Color.parseColor("#000000"))
                 .width(5));
-
     }
 
     public void logout(View view){
@@ -165,7 +155,7 @@ public class MapActivity extends Activity {
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
-        finish();
+        finishAffinity();
     }
 
     @Override

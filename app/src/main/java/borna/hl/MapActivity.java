@@ -31,6 +31,8 @@ import com.mapbox.services.commons.models.Position;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,10 +56,14 @@ public class MapActivity extends Activity {
 
         // Plaza del Triunfo in Granada, Spain.
         final Position destination = Position.fromCoordinates( -3.60184, 37.17616);
+        final Double lat = truncateDouble(45.485148123123);
+        final Double lng = truncateDouble(16.7843511321);
 
+        final Position currentLocation = Position.fromCoordinates(lat,lng);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.setStyleUrl(Style.MAPBOX_STREETS);
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
@@ -75,6 +81,11 @@ public class MapActivity extends Activity {
                         .position(new LatLng(45.764835, 16.008846))
                         .title("InRebus")
                         .snippet("Pozdrav Inrebus ekipi!"));
+
+                mapboxMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lat,lng))
+                        .title("tu sam")
+                        .snippet("wooo"));
                 try {
                     getRoute(origin, destination);
                 } catch (ServicesException servicesException) {
@@ -198,6 +209,14 @@ public class MapActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    public double truncateDouble(Double number)
+    {
+        number = BigDecimal.valueOf(number)
+                .setScale(6, RoundingMode.HALF_UP)
+                .doubleValue();
+        return number;
     }
 
 

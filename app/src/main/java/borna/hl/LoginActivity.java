@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class LoginActivity extends Activity {
     Button b1,b2;
@@ -42,7 +43,13 @@ public class LoginActivity extends Activity {
         if (gotBack != null)
             if( gotBack.equals("admin"))
             {
+                ArrayList<Task> tasks = new ArrayList<Task>();
+                tasks.add(new Task("Moslavacka 48"));
+                tasks.add(new Task("Moslavacka 49"));
+                tasks.add(new Task("Moslavacka 50"));
+
                 Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
+                intent.putExtra("points", tasks);
                 startActivity(intent);
                 finish();
             }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by unknown_device on 2.7.2017..
  */
 
-public class Task {
+public class Task implements java.io.Serializable {
     Task(String address){
         this.address = address;
     }

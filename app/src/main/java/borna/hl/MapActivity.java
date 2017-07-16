@@ -41,6 +41,7 @@ import retrofit2.Response;
 
 
 public class MapActivity extends Activity {
+    PreferencesManager session;
     private MapView mapView;
     private DirectionsRoute currentRoute;
     private MapboxMap map;
@@ -51,15 +52,20 @@ public class MapActivity extends Activity {
         Mapbox.getInstance(this,getString(R.string.access_token));
         setContentView(R.layout.activity_map);
 
+        //region this should be edited to recieve data from ArrayList<Task> object, sample usage of recieving through intent is in tasksactivity
+        session = new PreferencesManager(getApplicationContext());
+        // Inrebus
         // Alhambra landmark in Granada, Spain.
         final Position origin = Position.fromCoordinates(  -3.58809,37.17616);
 
         // Plaza del Triunfo in Granada, Spain.
         final Position destination = Position.fromCoordinates( -3.60184, 37.17616);
+
         final Double lat = truncateDouble(45.485148123123);
         final Double lng = truncateDouble(16.7843511321);
 
         final Position currentLocation = Position.fromCoordinates(lat,lng);
+        //endregion
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.setStyleUrl(Style.MAPBOX_STREETS);
@@ -69,22 +75,16 @@ public class MapActivity extends Activity {
             public void onMapReady(MapboxMap mapboxMap) {
                 map = mapboxMap;
                 mapboxMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(origin.getLatitude(), origin.getLongitude()))
-                        .title("Bok")
-                        .snippet("Bernarda"));
-                mapboxMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
-                        .title("Destination")
-                        .snippet("Plaza del Triunfo"));
+                        .position(new LatLng(origin.getLatitude(),origin.getLongitude()))
+                        .title("Alhambra"));
 
                 mapboxMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(45.764835, 16.008846))
-                        .title("InRebus")
-                        .snippet("Pozdrav Inrebus ekipi!"));
+                        .position(new LatLng(destination.getLatitude(),destination.getLongitude()))
+                        .title("Plaza del Triumfo"));
 
                 mapboxMap.addMarker(new MarkerOptions()
                         .position(new LatLng(lat,lng))
-                        .title("tu sam")
+                        .title("My location")
                         .snippet("wooo"));
                 try {
                     getRoute(origin, destination);
@@ -120,7 +120,6 @@ public class MapActivity extends Activity {
 
                 // Print some info about the route
                 currentRoute = response.body().getRoutes().get(0);
-                Log.d(TAG, "Distance: " + currentRoute.getDistance());
                 Toast.makeText(
                         MapActivity.this,
                         "Route is " + currentRoute.getDistance() + " meters long.",
@@ -160,12 +159,7 @@ public class MapActivity extends Activity {
     }
 
     public void logout(View view){
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-        editor.clear();
-        editor.commit();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
+        session.logoutUser();
         finishAffinity();
     }
 

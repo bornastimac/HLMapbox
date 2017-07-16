@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:mapbox_cameraTargetLat="37.17616"
         app:mapbox_cameraTargetLng="-3.58809"
-        app:mapbox_cameraZoom ="11"
+        app:mapbox_cameraZoom ="15"
         />
 
     <Button

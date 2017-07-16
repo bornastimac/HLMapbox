@@ -13,15 +13,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class LoginActivity extends Activity {
     Button b1,b2;
     EditText ed1,ed2;
-
-    TextView tx1;
-    int counter = 3;
+    PreferencesManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,56 +31,23 @@ public class LoginActivity extends Activity {
         b1 = (Button)findViewById(R.id.button);
         ed1 = (EditText)findViewById(R.id.editText);
         ed2 = (EditText)findViewById(R.id.editText2);
-
         b2 = (Button)findViewById(R.id.button2);
-        tx1 = (TextView)findViewById(R.id.textView3);
-        tx1.setVisibility(View.GONE);
 
-        //been logged in recently?
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-        SharedPreferences.Editor editor = pref.edit();
-        String gotBack = pref.getString("user", null);
-        if (gotBack != null)
-            if( gotBack.equals("admin"))
-            {
-                ArrayList<Task> tasks = new ArrayList<Task>();
-                tasks.add(new Task("Moslavacka 48"));
-                tasks.add(new Task("Moslavacka 49"));
-                tasks.add(new Task("Moslavacka 50"));
-
-                Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
-                intent.putExtra("points", tasks);
-                startActivity(intent);
-                finish();
-            }
-        //been logged in recently? END
-
+        session = new PreferencesManager(getApplicationContext());
+        if (session.isLoggedIn()) {
+            getTasks();
+            startTasksActivity();
+        }
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(ed1.getText().toString().equals("admin") &&
                         ed2.getText().toString().equals("admin")) {
-                    // Perserving logged user
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("user", "admin");
-                    editor.commit();
-                    // Perserving logged user END
-                    Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
-                    startActivity(intent);
-                    finish();
+                        session.createLoginSession("admin");
+                        startTasksActivity();
                 }else{
                     Toast.makeText(getApplicationContext(), "Wrong Credentials",Toast.LENGTH_SHORT).show();
-
-                    tx1.setVisibility(View.VISIBLE);
-                    tx1.setBackgroundColor(Color.RED);
-                    counter--;
-                    tx1.setText(Integer.toString(counter));
-
-                    if (counter == 0) {
-                        b1.setEnabled(false);
-                    }
                 }
             }
         });
@@ -88,9 +55,32 @@ public class LoginActivity extends Activity {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                finishAffinity();
             }
         });
 
+    }
+
+    private ArrayList<Task> getTasks() {
+        //implement server call and return ArrayList
+        return new ArrayList<>();
+    }
+
+    private void startTasksActivity() {
+//       getTasks(); should implement REST call
+//       this is an example array, it should be created in a factory method and/or filled in with REST data
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("Oreškovićeva 6/H"));
+        tasks.add(new Task("Varičakova 13"));
+        tasks.add(new Task("Siget 18C"));
+        tasks.add(new Task("Naserov trg"));
+
+
+        //region This is how you send an array of custom object to next activity (should be serializable)
+        Intent intent = new Intent(getApplicationContext(), TasksActivity.class);
+        intent.putExtra("points", tasks);
+        startActivity(intent);
+        //endregion
+        finish();
     }
 }

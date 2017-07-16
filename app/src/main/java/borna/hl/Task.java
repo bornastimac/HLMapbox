@@ -7,13 +7,13 @@ import java.util.ArrayList;
 /**
  * Created by unknown_device on 2.7.2017..
  */
-
+//SHOULD BE SERIALIZABLE
 public class Task implements java.io.Serializable {
     Task(String address){
         this.address = address;
     }
-    LatLng location;
+//    LatLng location;
     String address;
-    ArrayList<ToDo> ToDos;
+//    ArrayList<ToDo> ToDos;
 }
 

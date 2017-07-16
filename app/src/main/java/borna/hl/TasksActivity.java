@@ -25,15 +25,40 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TasksActivity extends Activity {
+    ArrayList<Task> tasks = new ArrayList<>();
+    TasksAdapter adapter;
 
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        // Create the adapter to convert the array to views
+        // Attach the adapter to a ListView
+        ListView listView =  (ListView) findViewById(R.id.lvTasks);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent i = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(i);
+
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tasks);
 
+        setContentView(R.layout.activity_tasks);
+        //region This is how you recieve an array of custom object (which should be serializable)
+        Bundle extras = getIntent().getExtras();
+        tasks = (ArrayList<Task>)getIntent().getSerializableExtra("points");
+        adapter = new TasksAdapter(this, tasks);
+        //endregion
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener= new LocationListener() {
+        LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 Double latitude;
@@ -41,31 +66,33 @@ public class TasksActivity extends Activity {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
             }
+
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
             }
+
             @Override
             public void onProviderEnabled(String provider) {
             }
+
             @Override
             public void onProviderDisabled(String provider) {
             }
         };
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, locationListener);
-        }catch (SecurityException x)
-        {
-            ;;;
+        } catch (SecurityException x) {
+            Toast.makeText(this,"Omogućite lokacije na uređaju (Postavke/Lokacija)",Toast.LENGTH_LONG );
+//            finishAffinity();
         }
         populateTasksList();
     }
 
     private void populateTasksList() {
         // Construct the data source
-
         //REST CALL AND SPINNER should come here
-        // ako ima zadatke(lokacije) pokreni mapactivity, inace pokreni listu mogucih zadataka(lokacija) za odabir
+        // If there are tasks after server call run mapactivity, else run list activity to choose a task
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="https://jsonplaceholder.typicode.com/posts/1";
@@ -75,7 +102,7 @@ public class TasksActivity extends Activity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(TasksActivity.this, response , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TasksActivity.this, "Sample REST API call  " + response , Toast.LENGTH_SHORT).show();
                                             //prebaciti string u object
                         try {
                             JSONObject json = new JSONObject(response);
@@ -95,44 +122,9 @@ public class TasksActivity extends Activity {
 
         //REST CALL AND SPINNER END
 
-        //napuniti iz shared preferences?
-        Bundle extras = getIntent().getExtras();
-        ArrayList<Task> tasks = (ArrayList<Task>)getIntent().getSerializableExtra("points");
-        // Create the adapter to convert the array to views
-        TasksAdapter adapter = new TasksAdapter(this, tasks);
-        // Attach the adapter to a ListView
-        ListView listView = (ListView) findViewById(R.id.lvTasks);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent i = new Intent(getApplicationContext(), MapActivity.class);
-                startActivity(i);
 
-            }
-        });
     }
 
 
 }
-//
-//{"data":{"translations":[{"translatedText":"Bonjour tout le monde"}]}}
-//        becomes:
-//
-//class DataWrapper {
-//    public Data data;
-//
-//    public static DataWrapper fromJson(String s) {
-//        return new Gson().fromJson(s, DataWrapper.class);
-//    }
-//    public String toString() {
-//        return new Gson().toJson(this);
-//    }
-//}
-//class Data {
-//    public List<Translation> translations;
-//}
-//class Translation {
-//    public String translatedText;
-//}
